@@ -51,19 +51,39 @@ Write a unit/integration tests for the backend.
 - JDK 11 or later
 - Maven 3.6+
 
+## Create database for use by the application
+
+Command line instructions to create MySQL database that the application will use.
+
+```bash
+mysql --host=127.0.0.1 --port=3306 --user=root --password # then enter password 
+```
+
+Within the MySQL session, create the database with the following:
+
+```sql
+create database xml_doc_library; -- Creates the new database
+create user 'xml_doc_user'@'%' identified by 'Se$curePas@@word'; -- Creates the user
+grant all on xml_doc_library.* to 'xml_doc_user'@'%'; -- Gives all privileges to the new user on the newly created database
+```
+
 # Build instructions
 
+# Future considerations
 
+- XML documents can be validated against set XSDs.
+- Large documents can be stored outside the database, which could just store file name.
+  - Separate indexing mechanisms can be applied then.
 
 # TODO
 
 - [X] Start with https://spring.io/guides/gs/accessing-data-mysql/ and build up the project from https://start.spring.io/. [2019-11-30]
-- [ ] Create git repo with initial commit and push.
-- [ ] Create the empty database and configuration.
-- [ ] Create unit tests against entity model.
-- [ ] Create the entity model.
-- [ ] Create the repository.
-- [ ] Set up in-memory DB for tests.
+- [X] Create git repo with initial commit and push. [2019-11-30]
+- [X] Create the empty database and configuration. [2019-11-30]
+- [X] Create unit tests against entity model. [2019-11-30]
+- [X] Create the entity model. [2019-11-30]
+- [X] Create the repository. [2019-11-30]
+- [X] Set up in-memory DB for tests. [2019-11-30]
 - [ ] Create the controller skeleton with input and output end points.
 - [ ] Create RESTful integration tests against the controller input function.
 - [ ] Create XML validator skeleton, unit tests, then implementation.
