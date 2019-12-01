@@ -26,8 +26,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -180,8 +178,7 @@ public final class XmlFileControllerFullIT {
 				Arguments.of("Note must be present.", metadata.toBuilder().note("").build(), status().is(STATUS_400)), //
 				Arguments.of("File not .xml extension.", metadata.toBuilder().filename("invalid02.txt").build(),
 						status().is(STATUS_400)), //
-				Arguments.of("Note is too long.", metadata.toBuilder().note(longNote).build(),
-						status().is(STATUS_400)), //
+				Arguments.of("Note is too long.", metadata.toBuilder().note(longNote).build(), status().is(STATUS_400)), //
 				Arguments.of("File is empty.", metadata.toBuilder().filename("no such file").build(),
 						status().is(STATUS_400))//
 		);

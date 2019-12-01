@@ -56,6 +56,7 @@
 
 	<script type="application/javascript">
 		
+		
 		/* Update list of files. */
 		function updateListOfFiles() {
 	        $.ajax({
@@ -69,10 +70,14 @@
 
 	                console.log("SUCCESS : ", data);
                 	$("#fileList").empty();
-	                jQuery.each( data, function( i, val ) {
-	                	$("#fileList").append( '<li><a href="/xmldoc/get/' 
-	                			+ val.filename + '">' + val.filename + '</a> - ' + val.note + '</li>' )
-	                	});	                
+                	if (data.length === 0) {
+    	                $("#fileList").html('<li>No files.</li>')
+                	} else {
+    	                jQuery.each( data, function( i, val ) {
+    	                	$("#fileList").append( '<li><a href="/xmldoc/get/' 
+    	                			+ val.filename + '">' + val.filename + '</a> - ' + val.note + '</li>' )
+    	                	});	                
+                	}
 
 	            },
 	            error: function (e) {
@@ -138,6 +143,7 @@
 
 	});
 
+	
 	
 	
 	

@@ -2,6 +2,93 @@
 
 A single page application that talks to a RESTful end point to upload XML and store to a database, with another RESTful interface to download the XML document.
 
+Files can be downloaded by clicking on the links in the app, as per the screenshots below.
+
+Screenshots.
+
+After uploading a document successfully.
+
+![screen_after_uploading_document.png](docs/images/screen_after_uploading_document.png)
+
+After uploading one file.
+
+![screen_after_uploading_document.png](docs/images/screen_after_uploading_document.png)
+
+When there are no files.
+
+![screen_no_docs.png](docs/images/screen_no_docs.png)
+
+Listing current files.
+
+![screen_with_content.png](docs/images/screen_with_content.png)
+
+When you try to upload a file that already exists. Only checks file name. No update procedure has been created.
+
+![screen_with_error_duplicates.png](docs/images/screen_with_error_duplicates.png)
+
+When you try to upload an invalid XML file.
+
+![screen_with_error_invalid-xml.png](docs/images/screen_with_error_invalid-xml.png)
+
+When you try to upload a large file.
+
+![screen_with_error_large-files.png](docs/images/screen_with_error_large-files.png)
+
+When you try to upload a non-xml file (no `.xml` extension).
+
+![screen_with_error_non-xml.png](docs/images/screen_with_error_non-xml.png)
+
+
+# How to build and run the app
+
+## Pre-requisites
+
+- MySQL version 8 or better. 
+- JDK 11 or later
+- Maven 3.6+
+
+## Download source
+
+Get the source from `github`.
+
+```
+cd /path/to/projects
+git clone git@github.com:robertmarkbram/ce-upload-xml.git
+cd ce-upload-xml
+```
+
+## Create database for use by the application
+
+Command line instructions to create MySQL database that the application will use.
+
+```bash
+mysql --host=127.0.0.1 --port=3306 --user=root --password # then enter password 
+```
+
+Within the MySQL session, create the database with the following:
+
+```sql
+create database xml_doc_library; -- Creates the new database
+create user 'xml_doc_user'@'%' identified by 'Se$curePas@@word'; -- Creates the user
+grant all on xml_doc_library.* to 'xml_doc_user'@'%'; -- Gives all privileges to the new user on the newly created database
+```
+
+## Run instructions
+
+```bash
+mvn clean package
+mvn spring-boot:run
+```
+
+Open http://localhost:8080/
+
+# Future considerations
+
+- XML documents can be validated against set XSDs.
+- Separate indexing mechanisms can be applied to files.
+- Allow an update operation.
+- Add better validation mechanisms using validation framwork.
+
 # Requirements
 
 Create a single page front end with a form that lets a user upload an XML file to a database.
@@ -41,40 +128,7 @@ No user interface is required for this API call.
 
 ## Tests
 
-Write a unit/integration tests for the backend.
-
-# How to build the app
-
-## Pre-requisites
-
-- MySQL version 8 or better. 
-- JDK 11 or later
-- Maven 3.6+
-
-## Create database for use by the application
-
-Command line instructions to create MySQL database that the application will use.
-
-```bash
-mysql --host=127.0.0.1 --port=3306 --user=root --password # then enter password 
-```
-
-Within the MySQL session, create the database with the following:
-
-```sql
-create database xml_doc_library; -- Creates the new database
-create user 'xml_doc_user'@'%' identified by 'Se$curePas@@word'; -- Creates the user
-grant all on xml_doc_library.* to 'xml_doc_user'@'%'; -- Gives all privileges to the new user on the newly created database
-```
-
-# Build instructions
-
-# Future considerations
-
-- XML documents can be validated against set XSDs.
-- Separate indexing mechanisms can be applied to files.
-- Allow an update operation.
-- Add better validation mechanisms using validation framwork.
+Write unit/integration tests for the backend.
 
 # TODO
 
