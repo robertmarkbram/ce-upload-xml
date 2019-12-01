@@ -72,8 +72,9 @@ grant all on xml_doc_library.* to 'xml_doc_user'@'%'; -- Gives all privileges to
 # Future considerations
 
 - XML documents can be validated against set XSDs.
-- Large documents can be stored outside the database, which could just store file name.
-  - Separate indexing mechanisms can be applied then.
+- Separate indexing mechanisms can be applied to files.
+- Allow an update operation.
+- Add better validation mechanisms using validation framwork.
 
 # TODO
 
@@ -88,17 +89,17 @@ grant all on xml_doc_library.* to 'xml_doc_user'@'%'; -- Gives all privileges to
   - See: [Spring file uploader](https://spring.io/guides/gs/uploading-files/).
   - See: [Download image or file](https://www.baeldung.com/spring-controller-return-image-file).
 - [X] Create RESTful integration tests against the controller input function. [2019-12-01]
-- [ ] Create XML validator skeleton, unit tests, then implementation.
+- [X] Create XML validator skeleton, unit tests, then implementation. [2019-12-01]
   - See [creating custom validator](https://www.baeldung.com/spring-mvc-custom-validator).
   - See [XML validation](https://simonharrer.wordpress.com/2012/11/05/xml-validation-with-the-java-api/): well formed only, no XSD validation.
-- [ ] Add validation to controller https://www.baeldung.com/spring-boot-bean-validation.
-  - [ ] Mandatory inputs.
-  - [ ] Max size of inputs.
-  - [ ] XML validation: well formed only, no XSD validation (https://simonharrer.wordpress.com/2012/11/05/xml-validation-with-the-java-api/).
-- [ ] Create RESTful integration tests against the controller output function.
+- [X] Add validation to controller https://www.baeldung.com/spring-boot-bean-validation. [2019-12-01]
+  - [X] Mandatory inputs. [2019-12-01]
+  - [X] Max size of inputs. [2019-12-01]
+  - [X] XML validation: well formed only, no XSD validation (https://simonharrer.wordpress.com/2012/11/05/xml-validation-with-the-java-api/). [2019-12-01]
+- [X] Create RESTful integration tests against the controller output function. [2019-12-01]
   - See: [Learn How to Use JUnit 5 to Test Your Spring Boot Apps](https://dzone.com/articles/learn-how-to-use-junit-5-to-test-your-spring-boot)
-- [ ] Create the application class.
-- [ ] Create front end page.
-- [ ] Run it.
+- [X] Create the application class. [2019-12-01]
+- [X] Create front end page. [2019-12-01]
+- [X] Run it. [2019-12-01]
 - [ ] Update security.
 - [ ] Run it again.

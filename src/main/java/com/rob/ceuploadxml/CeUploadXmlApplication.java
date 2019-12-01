@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import com.rob.ceuploadxml.service.StorageProperties;
 import com.rob.ceuploadxml.service.XmlStorageService;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.rob.ceuploadxml"})
 @EnableConfigurationProperties(StorageProperties.class)
 public class CeUploadXmlApplication {
 

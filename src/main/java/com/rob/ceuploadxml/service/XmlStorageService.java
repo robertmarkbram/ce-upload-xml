@@ -20,8 +20,9 @@ public interface XmlStorageService {
 	 * 
 	 * @param file file to store
 	 * @param note or description to save against the file
+	 * @return data about file stored
 	 */
-	void store(MultipartFile file, String note);
+	XmlDocMetadata store(MultipartFile file, String note);
 
 	/**
 	 * Load a file from storage.
@@ -36,7 +37,7 @@ public interface XmlStorageService {
 	 * @return resource object for file
 	 */
 	Resource loadAsResource(String filename);
-	
+
 	/**
 	 * @return list of all XML files.
 	 */

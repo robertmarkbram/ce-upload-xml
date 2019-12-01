@@ -1,10 +1,151 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<title>Getting Started: Serving Web Content</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta charset="utf-8" />
+<title>Upload XML files</title>
+<link href="webjars/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
+<script src="webjars/jquery/3.4.1/jquery.min.js"></script>
+<script src="webjars/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 </head>
 <body>
-	<p>Content to come.</p>
+	<div class="d-flex justify-content-center align-items-center container ">
+		<div class="row ">
+			<form action="/xmldoc/add" method="POST" enctype="multipart/form-data" id="fileUploadForm">
+
+				<div class="custom-file mb-2 mt-5">
+					<label class="custom-file-label" for="file">File</label>
+					<div class="col-sm-10">
+						<input type="file" class="custom-file-input" name="file" id="file">
+					</div>
+				</div>
+
+				<div class="form-group row mb-2">
+					<label for="note" class="col-sm-2 col-form-label">Note</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" name="note" id="note">
+					</div>
+				</div>
+
+				<div class="form-group row mb-2 text-right">
+					<div class="col"></div>
+					<div class="col-auto">
+						<button type="submit" class="btn" id="submit">Submit</button>
+					</div>
+				</div>
+
+				<div class="form-group row mb-2 text-right">
+					<div class="col"></div>
+					<div class="col-auto">
+						<p class="text-justify text-wrap" style="width: 20rem;" id="result"></p>
+					</div>
+				</div>
+
+			</form>
+		</div>
+	</div>
+
+	<div class="d-flex justify-content-center container ">
+		<div class="row mb-2">
+			<div>
+				<p>Current files:</p>
+				<ol id="fileList"></ol>
+			</div>
+		</div>
+	</div>
+
+
+	<script type="application/javascript">
+		
+		/* Update list of files. */
+		function updateListOfFiles() {
+	        $.ajax({
+	            type: "GET",
+	            url: "/xmldoc/list",
+	            processData: false,
+	            contentType: false,
+	            cache: false,
+	            timeout: 600000,
+	            success: function (data) {
+
+	                console.log("SUCCESS : ", data);
+                	$("#fileList").empty();
+	                jQuery.each( data, function( i, val ) {
+	                	$("#fileList").append( '<li><a href="/xmldoc/get/' 
+	                			+ val.filename + '">' + val.filename + '</a> - ' + val.note + '</li>' )
+	                	});	                
+
+	            },
+	            error: function (e) {
+
+	                $("#fileList").html('<li>Failed to list files.</li>')
+	                console.log("ERROR : ", e);
+
+	            }
+	        });
+		}
+		
+	$(document).ready(function () {
+
+		updateListOfFiles();
+		
+    	// Update label to show file name on change.
+        $('#file').change(function(e){
+            var fileName = e.target.files[0].name;
+            $('.custom-file-label').html(fileName);
+        });
+
+    	
+	    $("#submit").click(function (event) {
+
+	        // Stop form from submitting - we do it with Ajax.
+	        event.preventDefault();
+
+	        // Get form
+	        var form = $('#fileUploadForm')[0];
+
+			// Create an FormData object 
+	        var data = new FormData(form);
+
+			// Disabled the submit button.
+	        $("#submit").prop("disabled", true);
+
+	        $.ajax({
+	            type: "POST",
+	            enctype: 'multipart/form-data',
+	            url: "/xmldoc/add",
+	            data: data,
+	            processData: false,
+	            contentType: false,
+	            cache: false,
+	            timeout: 600000,
+	            success: function (data) {
+
+	                $("#result").html('Uploaded <a href="/xmldoc/get/' + data.filename + '">' + data.filename + '</a>')
+	                console.log("SUCCESS : ", data);
+	                $("#submit").prop("disabled", false);
+	                updateListOfFiles();
+	            },
+	            error: function (e) {
+
+	                $("#result").text(JSON.parse(e.responseText).message);
+	                console.log("ERROR : ", e);
+	                $("#submit").prop("disabled", false);
+
+	            }
+	        });
+
+	    });
+
+	});
+
+	
+	
+	
+	
+	
+	
+	
+	
+	</script>
 </body>
 </html>

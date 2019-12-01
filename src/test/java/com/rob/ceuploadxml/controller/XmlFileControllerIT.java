@@ -1,6 +1,5 @@
 package com.rob.ceuploadxml.controller;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,12 +29,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rob.ceuploadxml.model.XmlDocMetadata;
+import com.rob.ceuploadxml.service.StorageException;
 import com.rob.ceuploadxml.service.StorageFileNotFoundException;
 import com.rob.ceuploadxml.service.XmlStorageService;
 
 /**
  * Integration test of {@link XmlFileController} using a mock of
- * {@link XmlStorageService}.
+ * {@link XmlStorageService}, so it just tests controller logic.
  */
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(XmlFileController.class)
@@ -48,12 +48,17 @@ public final class XmlFileControllerIT {
 	private static final int STATUS_404 = 404;
 
 	/**
+	 * HTTP status meaning resource bad request or bad data sent within request.
+	 */
+	private static final int STATUS_400 = 400;
+
+	/**
 	 * HTTP status meaning request was good.
 	 */
 	private static final ResultMatcher STATUS_OK = status().isOk();
 
 	/**
-	 * Where test files should be under project root.
+	 * Where test files should be under project target/test-classes.
 	 */
 	private static final String TEST_FILES_LOCATION = "xml-files-to-upload/";
 
@@ -74,11 +79,12 @@ public final class XmlFileControllerIT {
 	private MockMvc mockMvc;
 
 	/**
-	 * Object to convert JSON return from RESTfull calls into the object they should map to. 
+	 * Object to convert JSON return from RESTfull calls into the object they should
+	 * map to.
 	 */
 	@Autowired
 	private ObjectMapper objectMapper;
-	
+
 	/**
 	 * Service underlying the controller we are testing.
 	 */
@@ -105,11 +111,12 @@ public final class XmlFileControllerIT {
 	 *                      contents with; can be null if <code>status</code> is not
 	 *                      OK.
 	 * @param status        HTTP response we should get back
+	 * @throws Exception if test code throws an unexpected exception
 	 */
 	@ParameterizedTest(name = "#{index} - [{0}]")
 	@MethodSource("dataForTestDownloadFile")
 	public void testDownloadFile(final String label, final String fileToRequest, final String fileToLoad,
-			final ResultMatcher status) {
+			final ResultMatcher status) throws Exception {
 
 		Resource xmlDoc = new ClassPathResource(TEST_FILES_LOCATION + fileToLoad);
 
@@ -119,20 +126,17 @@ public final class XmlFileControllerIT {
 			Mockito.when(service.loadAsResource(Mockito.anyString())).thenThrow(StorageFileNotFoundException.class);
 		}
 
-		assertDoesNotThrow(() -> {
-			MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(PATH_GET + fileToRequest)//
-					.contentType(MediaType.APPLICATION_JSON)//
-					.accept(MediaType.APPLICATION_JSON))//
-					.andExpect(status).andReturn();
+		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(PATH_GET + fileToRequest)//
+				.contentType(MediaType.APPLICATION_JSON)//
+				.accept(MediaType.APPLICATION_JSON))//
+				.andExpect(status).andReturn();
 
-			if (status.equals(STATUS_OK)) {
-				String resultXml = result.getResponse().getContentAsString();
-				assertNotNull(resultXml);
-				assertEquals(Files.readString(xmlDoc.getFile().toPath()), resultXml, label);
-			}
-		});
+		if (status.equals(STATUS_OK)) {
+			String resultXml = result.getResponse().getContentAsString();
+			assertNotNull(resultXml);
+			assertEquals(Files.readString(xmlDoc.getFile().toPath()), resultXml, label);
+		}
 	}
-
 
 	/**
 	 * @return data for
@@ -143,53 +147,59 @@ public final class XmlFileControllerIT {
 		String filename1 = "test01.xml";
 		String note1 = "Note about XML file.";
 		Resource xmlDoc = new ClassPathResource(TEST_FILES_LOCATION + filename1);
-		
+
 		XmlDocMetadata metadata = XmlDocMetadata.builder()//
 				.size(xmlDoc.getFile().length())//
 				.note(note1)//
 				.filename(filename1)//
 				.build();
 
-		
 		return Stream.of(//
 				Arguments.of("File is valid.", metadata, STATUS_OK), //
-				Arguments.of("File does not exist.", metadata, status().is(STATUS_404))//
+				Arguments.of("File should fail.", metadata, status().is(STATUS_400))//
 		);
 	}
 
 	/**
-	 * Test downloading of a file.
+	 * Test downloading of a file. Only testing logic in the controller, not the
+	 * storage service. Since the controller really only calls the storage service,
+	 * this is a bit of a pointless test right now, but included in case logic gets
+	 * added.
 	 * 
-	 * @param label            for test
-	 * @param expected         data we expect to get back about the file we saved;
-	 *                         can be null if <code>status</code> is not OK.
-	 * @param status           HTTP response we should get back
+	 * @param label    for test
+	 * @param expected data we expect to get back about the file we saved; can be
+	 *                 null if <code>status</code> is not OK.
+	 * @param status   HTTP response we should get back
+	 * @throws Exception if test code throws an unexpected exception
 	 */
 	@ParameterizedTest(name = "#{index} - [{0}]")
 	@MethodSource("dataForTestUploadFile")
-	public void testUploadFile(final String label, final XmlDocMetadata expected,
-			final ResultMatcher status) {
+	public void testUploadFile(final String label, final XmlDocMetadata expected, final ResultMatcher status)
+			throws Exception {
 
 		Resource xmlDoc = new ClassPathResource(TEST_FILES_LOCATION + expected.getFilename());
 
-		assertDoesNotThrow(() -> {
-
-			MockMultipartFile fileToUpload = new MockMultipartFile("file", expected.getFilename(), "text/plain",
+		MockMultipartFile fileToUpload = new MockMultipartFile("file", expected.getFilename(), "text/plain",
 				Files.readString(xmlDoc.getFile().toPath()).getBytes());
 
-			MvcResult result = mockMvc.perform(MockMvcRequestBuilders//
-					.multipart(PATH_ADD)//
-					.file(fileToUpload)//
-					.param("note", expected.getNote())//
-					.accept(MediaType.APPLICATION_JSON))//
-					.andExpect(status).andReturn();
+		if (status.equals(STATUS_OK)) {
+			Mockito.when(service.store(Mockito.any(), Mockito.anyString())).thenReturn(expected);
+		} else {
+			Mockito.when(service.store(Mockito.any(), Mockito.anyString())).thenThrow(StorageException.class);
+		}
 
-			if (status.equals(STATUS_OK)) {
-				String contentAsString = result.getResponse().getContentAsString();
-				assertNotNull(contentAsString);
-				XmlDocMetadata actual = objectMapper.readValue(contentAsString, XmlDocMetadata.class);
-				assertEquals(expected, actual, label);
-			}
-		});
+		MvcResult result = mockMvc.perform(MockMvcRequestBuilders//
+				.multipart(PATH_ADD)//
+				.file(fileToUpload)//
+				.param("note", expected.getNote())//
+				.accept(MediaType.APPLICATION_JSON))//
+				.andExpect(status).andReturn();
+
+		if (status.equals(STATUS_OK)) {
+			String contentAsString = result.getResponse().getContentAsString();
+			assertNotNull(contentAsString);
+			XmlDocMetadata actual = objectMapper.readValue(contentAsString, XmlDocMetadata.class);
+			assertEquals(expected, actual, label);
+		}
 	}
 }
