@@ -8,32 +8,33 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import com.rob.ceuploadxml.model.XmlDoc.XmlDocBuilder;
+import com.rob.ceuploadxml.model.XmlDocMetadata.XmlDocMetadataBuilder;
 
 /**
  * Test equality and validation (if any is built in to the Builder).
  */
-public final class XmlDocTest {
+public final class XmlDocMetadataTest {
 
 	/**
-	 * @return data for {@link #testEquality(String, XmlDoc, XmlDoc, boolean)}.
+	 * @return data for
+	 *         {@link #testEquality(String, XmlDocMetadata, XmlDocMetadata, boolean)}.
 	 */
 	private static Stream<Arguments> dataForTestEquality() {
-		final XmlDoc xmlBase = XmlDoc.builder()//
+		final XmlDocMetadata xmlBase = XmlDocMetadata.builder()//
 				.filename("file.xml")//
 				.note("An XML file.")//
-				.xml("<data name=\"test\"></data>")//
+				.size(2)
 				.build();
 
-		final XmlDocBuilder builder = xmlBase.toBuilder();
+		final XmlDocMetadataBuilder builder = xmlBase.toBuilder();
 
 		return Stream.of(//
 				Arguments.of("Object equals itself.", xmlBase, xmlBase, true), //
 				Arguments.of("State is same.", xmlBase, builder.build(), true), //
 				Arguments.of("Note is different.", xmlBase, builder.note("The XML file.").build(), false), //
 				Arguments.of("ID is different.", xmlBase, builder.id(2).build(), false), //
-				Arguments.of("File name is different.", xmlBase, builder.filename("file2.xml").build(), false), //
-				Arguments.of("XML is different.", xmlBase, builder.xml("<data></data>").build(), false));
+				Arguments.of("Size is different.", xmlBase, builder.size(1).build(), false), //
+				Arguments.of("File name is different.", xmlBase, builder.filename("file2.xml").build(), false));
 	}
 
 	/**
@@ -46,7 +47,8 @@ public final class XmlDocTest {
 	 */
 	@ParameterizedTest(name = "#{index} - [{0}]")
 	@MethodSource("dataForTestEquality")
-	public void testEquality(final String label, final XmlDoc xml1, final XmlDoc xml2, final boolean shouldBeEqual) {
+	public void testEquality(final String label, final XmlDocMetadata xml1, final XmlDocMetadata xml2,
+			final boolean shouldBeEqual) {
 		assertEquals(shouldBeEqual, xml1.equals(xml2), label);
 	}
 

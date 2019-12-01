@@ -12,7 +12,7 @@
 	<groupId>com.rob</groupId>
 	<artifactId>ce-upload-xml</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>ce-upload-xml</name>
 	<description>Coding exercise to demonstrate creating a RESTful web application for uploading XML documents.</description>
 
@@ -81,6 +81,11 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
 		</dependency>
 	</dependencies>
 

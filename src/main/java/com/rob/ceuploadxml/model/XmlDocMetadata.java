@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 /**
- * XML document.
+ * Metadata about an XML document.
  */
 @Entity
 @Data
@@ -21,17 +21,14 @@ import lombok.NonNull;
 @EqualsAndHashCode
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-public final class XmlDoc {
+public final class XmlDocMetadata {
 
+	/**
+	 * ID for record.
+	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private final Integer id;
-
-	/**
-	 * XML payload.
-	 */
-	@NonNull
-	private final String xml;
 
 	/**
 	 * File name.
@@ -44,5 +41,10 @@ public final class XmlDoc {
 	 */
 	@NonNull
 	private final String note;
+
+	/**
+	 * Size of file.
+	 */
+	private final long size;
 
 }

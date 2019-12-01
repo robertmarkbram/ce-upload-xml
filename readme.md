@@ -84,8 +84,10 @@ grant all on xml_doc_library.* to 'xml_doc_user'@'%'; -- Gives all privileges to
 - [X] Create the entity model. [2019-11-30]
 - [X] Create the repository. [2019-11-30]
 - [X] Set up in-memory DB for tests. [2019-11-30]
-- [ ] Create the controller skeleton with input and output end points.
-- [ ] Create RESTful integration tests against the controller input function.
+- [X] Create the controller skeleton with input and output end points. [2019-12-01]
+  - See: [Spring file uploader](https://spring.io/guides/gs/uploading-files/).
+  - See: [Download image or file](https://www.baeldung.com/spring-controller-return-image-file).
+- [X] Create RESTful integration tests against the controller input function. [2019-12-01]
 - [ ] Create XML validator skeleton, unit tests, then implementation.
   - See [creating custom validator](https://www.baeldung.com/spring-mvc-custom-validator).
   - See [XML validation](https://simonharrer.wordpress.com/2012/11/05/xml-validation-with-the-java-api/): well formed only, no XSD validation.
@@ -94,6 +96,7 @@ grant all on xml_doc_library.* to 'xml_doc_user'@'%'; -- Gives all privileges to
   - [ ] Max size of inputs.
   - [ ] XML validation: well formed only, no XSD validation (https://simonharrer.wordpress.com/2012/11/05/xml-validation-with-the-java-api/).
 - [ ] Create RESTful integration tests against the controller output function.
+  - See: [Learn How to Use JUnit 5 to Test Your Spring Boot Apps](https://dzone.com/articles/learn-how-to-use-junit-5-to-test-your-spring-boot)
 - [ ] Create the application class.
 - [ ] Create front end page.
 - [ ] Run it.
